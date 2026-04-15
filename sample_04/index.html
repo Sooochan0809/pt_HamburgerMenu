@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HM_sample04</title>
+    <style>
+        :root {
+            --bg: #eb6238;
+            --m_bg: #e6724f;
+            --ui: #FFF8E7;
+            --logo: #ff3f05;
+            --text: #FFF8E7;
+        }
+
+        html {
+            scroll-behavior: auto;
+        }
+
+        body {
+            font-family: "Zen Old Mincho", serif;
+            background-color: var(--bg);
+            margin: 0;
+        }
+
+        .hamburger-menu-root {
+            position: relative;
+        }
+
+        .hamburger {
+            position: fixed;
+            top: 32px;
+            right: 24px;
+            display: flex;
+            width: 32px;
+            height: 24px;
+            z-index: 9999;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .hamburger span {
+            width: 32px;
+            height: 2px;
+            border-radius: 9999px;
+            background: var(--ui);
+            display: block;
+            transition: 1.0s;
+        }
+
+        #menu-toggle {
+            display: none;
+        }
+
+        .menu {
+            position: fixed;
+            padding-top: 15vh;
+            inset: 0;
+            /* ③ 背景のバックグラウンド */
+            background: var(--m_bg);
+
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+
+            z-index: 9998;
+            opacity: 0;
+            transform: scale(1.0);
+            filter: blur(1rem);
+            pointer-events: none;
+
+            transition:
+                opacity 1.2s ease,
+                transform 1.2s ease,
+                filter 0.8s ease;
+
+            /* 擬似要素を重ねるため */
+            overflow: hidden;
+        }
+
+        /* ② 背景ロゴ（中間レイヤー） */
+        .menu::before {
+            content: "";
+            position: absolute;
+            left: -10vw;
+            right: -10vw;
+            top: 0;
+            bottom: 0;
+            z-index: 0;
+            pointer-events: none;
+
+            background-color: var(--logo);
+            opacity: 0.3;
+            filter: blur(0.5rem);
+            transform: rotate(-13deg);
+
+            -webkit-mask-image: url("logo02.svg");
+            mask-image: url("logo02.svg");
+            -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+            -webkit-mask-position: 0 95%;
+            mask-position: 0 95%;
+            -webkit-mask-size: 100vw;
+            mask-size: 100vw;
+        }
+
+        /* ① メニュー項目（最前面） */
+        .menu a {
+            position: relative;
+            z-index: 9998;
+            display: inline-block;
+
+            margin-left: 24px;
+            margin-bottom: 2.2vh;
+
+            color: var(--ui);
+            text-decoration: none;
+
+            touch-action: manipulation;
+
+            font-size: 6vw;
+            letter-spacing: 0.8vw;
+            overflow: visible;
+        }
+
+        .hamburger,
+        .menu {
+            display: none;
+        }
+
+        @media (max-width:700px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .menu {
+                display: flex;
+            }
+        }
+
+        #menu-toggle:not(:checked)+.hamburger+.menu {
+            transition:
+                opacity 3.6s ease,
+                transform 3.6s cubic-bezier(0.22, 1, 0.36, 1),
+                filter 2.4s ease;
+        }
+
+        #menu-toggle:checked+.hamburger+.menu {
+            opacity: 1;
+            transform: scale(1);
+            filter: blur(0);
+            pointer-events: auto;
+        }
+
+        #menu-toggle:checked+.hamburger span:nth-child(1) {
+            transform: translateY(11px) rotate(45deg);
+        }
+
+        #menu-toggle:checked+.hamburger span:nth-child(2) {
+            opacity: 0;
+        }
+
+        #menu-toggle:checked+.hamburger span:nth-child(3) {
+            transform: translateY(-11px) rotate(-45deg);
+        }
+
+        .wax-char {
+            --melt: 0;
+            position: relative;
+            display: inline-block;
+            transform-origin: center top;
+            transition: transform 0.12s linear, filter 0.12s linear, opacity 0.12s linear;
+            transform: translateY(calc(var(--melt) * 40px)) scaleY(calc(1 + var(--melt) * 2.2));
+            filter: blur(calc(var(--melt) * 3px));
+            opacity: calc(1 - var(--melt));
+            text-shadow: 0 calc(var(--melt) * 10px) 12px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 以下テスト用メインページスタイル */
+        .title {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            writing-mode: vertical-rl;
+            text-align: center;
+            font-size: 7rem;
+            color: var(--text);
+        }
+
+        .section {
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+        }
+
+        .section-inner {
+            padding-left: 10vw;
+            padding-right: 10vw;
+            color: var(--text);
+        }
+
+        .section:nth-child(even) {
+            background: rgba(245, 240, 232, 0.04);
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="hamburger-menu-root" aria-label="menu">
+        <input type="checkbox" id="menu-toggle" />
+
+        <label for="menu-toggle" class="hamburger" aria-label="hamburger-menu">
+            <span></span><span></span><span></span>
+        </label>
+
+        <nav class="menu">
+            <a href="#section-0">ホーム</a>
+            <a href="#section-1">開催概要</a>
+            <a href="#section-2">修士研究発表</a>
+            <a href="#section-3">プロジェクト研究発表</a>
+            <a href="#section-4">関連展示</a>
+            <a href="#section-5">イベント</a>
+            <a href="#section-6">交通アクセス</a>
+            <a href="#section-7">お問い合わせ</a>
+        </nav>
+    </nav>
+
+    <main>
+        <section class="section" id="section-0">
+            <div class="section-inner">
+                <div class="title">余熱</div>
+            </div>
+        </section>
+
+        <section class="section" id="section-1">
+            <div class="section-inner">
+                <h1>開催概要</h1>
+            </div>
+        </section>
+
+        <section class="section" id="section-2">
+            <div class="section-inner">
+                <h1>修士研究発表</h1>
+            </div>
+        </section>
+
+        <section class="section" id="section-3">
+            <div class="section-inner">
+                <h1>プロジェクト研究発表</h1>
+            </div>
+        </section>
+
+        <section class="section" id="section-4">
+            <div class="section-inner">
+                <h1>関連展示</h1>
+            </div>
+        </section>
+
+        <section class="section" id="section-5">
+            <div class="section-inner">
+                <h1>イベント</h1>
+            </div>
+        </section>
+
+        <section class="section" id="section-6">
+            <div class="section-inner">
+                <h1>交通アクセス</h1>
+            </div>
+        </section>
+
+        <section class="section" id="section-7">
+            <div class="section-inner">
+                <h1>お問い合わせ</h1>
+            </div>
+        </section>
+    </main>
+</body>
+
+<!-- Hammer.js / SmoothScroll -->
+<script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
+
+<script>
+    (function () {
+        const menuToggle = document.getElementById('menu-toggle');
+
+        function closeMenu() {
+            if (menuToggle && menuToggle instanceof HTMLInputElement) {
+                menuToggle.checked = false;
+            }
+        }
+
+        const links = Array.from(document.querySelectorAll('.menu a[href^="#"]'));
+
+        for (const link of links) {
+            if (!(link instanceof HTMLAnchorElement)) continue;
+
+            const text = (link.textContent || '').trim();
+            link.textContent = '';
+
+            const chars = [];
+            for (const ch of text) {
+                const span = document.createElement('span');
+                span.textContent = ch;
+                span.className = 'wax-char';
+                span.style.setProperty('--melt', '0');
+                link.appendChild(span);
+                chars.push({ el: span, heat: 0, melt: 0 });
+            }
+
+            let pressing = false;
+            let pressX = null;
+
+            const radius = 20;
+            const heatGain = 0.01;
+            const coolRate = 0.0;
+            const meltStartThreshold = 0.8;
+            const followSpeed = 0.001;
+
+            const hammer = new Hammer(link);
+            hammer.get('press').set({ time: 300 });
+
+            hammer.on('tap', (ev) => {
+                const href = link.getAttribute('href');
+                if (!href || href === '#' || href === '#!') return;
+
+                if (ev && ev.preventDefault) ev.preventDefault();
+
+                if (location.hash !== href) {
+                    location.hash = href;
+                } else {
+                    const target = document.querySelector(href);
+                    if (target) target.scrollIntoView();
+                }
+
+                setTimeout(closeMenu, 0);
+            });
+
+            hammer.on('press', (ev) => {
+                pressing = true;
+                pressX = ev && ev.center ? ev.center.x : null;
+            });
+
+            hammer.on('pressup', () => {
+                pressing = false;
+                pressX = null;
+            });
+
+            function updateHeat() {
+                if (!pressing || pressX === null) {
+                    for (const c of chars) c.heat = Math.max(0, c.heat - coolRate);
+                    return;
+                }
+                for (const c of chars) {
+                    const rect = c.el.getBoundingClientRect();
+                    const cx = rect.left + rect.width / 2;
+                    const dist = Math.abs(cx - pressX);
+                    const influence = Math.max(0, 1 - dist / radius);
+                    c.heat = influence > 0
+                        ? Math.min(1, c.heat + influence * heatGain)
+                        : Math.max(0, c.heat - coolRate);
+                }
+            }
+
+            function animate() {
+                updateHeat();
+                let maxHeat = 0;
+
+                for (const c of chars) {
+                    let target = 0;
+                    if (c.heat > meltStartThreshold) {
+                        const n = (c.heat - meltStartThreshold) / (1 - meltStartThreshold);
+                        target = Math.min(1, n * n);
+                    }
+                    c.melt += (target - c.melt) * followSpeed;
+                    c.el.style.setProperty('--melt', c.melt.toFixed(3));
+                    if (c.heat > maxHeat) maxHeat = c.heat;
+                }
+
+                link.classList.toggle('is-hot', maxHeat > 0.3);
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+    })();
+</script>
+
+</html>

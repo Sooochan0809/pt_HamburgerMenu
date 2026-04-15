@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HM_sample03</title>
+
+    <style>
+        :root {
+            --bg: #eb6238;
+            --m_bg: #e6724f;
+            --ui: #f5f0e8;
+            --text: #f5f0e8;
+        }
+
+        body {
+            font-family: "Zen Old Mincho", serif;
+            background-color: var(--bg);
+            margin: 0;
+        }
+
+        .header {
+            position: fixed;
+            min-width: 100vw;
+            height: 72px;
+            z-index: 9999;
+            align-items: center;
+            justify-content: space-between;
+            pointer-events: auto;
+        }
+
+        .logo {
+            width: 72px;
+            height: 48px;
+            margin-left: 1rem;
+            z-index: 9999;
+            color: var(--ui);
+            align-items: center;
+            justify-content: center;
+        }
+
+        #logo {
+            display: block;
+            line-height: 0;
+        }
+
+        #logo svg {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        #menu-toggle {
+            display: none;
+        }
+
+        .hamburger {
+            width: 32px;
+            height: 24px;
+            margin-right: 1rem;
+            z-index: 9999;
+            cursor: pointer;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .hamburger span {
+            transform-origin: center;
+            height: 2px;
+            background: var(--ui);
+            display: block;
+            transition: 0.3s;
+        }
+
+        .hamburger span:nth-child(1) {
+            width: 32px;
+        }
+
+        .hamburger span:nth-child(2) {
+            width: 24px;
+        }
+
+        .hamburger span:nth-child(3) {
+            width: 16px;
+        }
+
+        .menu {
+            position: fixed;
+            inset: 0;
+            background: var(--m_bg);
+            flex-direction: row;
+            justify-content: center;
+            align-items: flex-start;
+            z-index: 9998;
+            padding-top: 18vh;
+            gap: 16px;
+            opacity: 0;
+            transform: scale(0.96);
+            filter: blur(1rem);
+            pointer-events: none;
+            transition:
+                opacity 0.8s ease,
+                transform 0.8s ease,
+                filter 0.6s ease;
+        }
+
+        .menu a {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            color: var(--ui);
+            text-decoration: none;
+            font-size: 20px;
+            letter-spacing: 0.15em;
+            display: block;
+            align-items: initial;
+        }
+
+        .header,
+        .logo,
+        .hamburger,
+        .menu {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .header {
+                display: flex;
+            }
+
+            .logo {
+                display: flex;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .menu {
+                display: flex;
+            }
+        }
+
+        #menu-toggle:not(:checked)+.hamburger+.menu {
+            transition:
+                opacity 3.6s ease,
+                transform 3.6s cubic-bezier(0.22, 1, 0.36, 1),
+                filter 2.4s ease;
+        }
+
+        #menu-toggle:checked+.hamburger+.menu {
+            opacity: 1;
+            transform: scale(1);
+            filter: blur(0);
+            pointer-events: auto;
+        }
+
+        #menu-toggle:checked+.hamburger span {
+            width: 32px;
+        }
+
+        #menu-toggle:checked+.hamburger span:nth-child(1) {
+            transform: translateY(11px) rotate(45deg);
+        }
+
+        #menu-toggle:checked+.hamburger span:nth-child(2) {
+            opacity: 0;
+        }
+
+        #menu-toggle:checked+.hamburger span:nth-child(3) {
+            transform: translateY(-11px) rotate(-45deg);
+        }
+
+        .wax-char {
+            --melt: 0;
+            position: relative;
+            display: inline-block;
+            transform-origin: center top;
+            transition:
+                transform 0.12s linear,
+                filter 0.12s linear,
+                opacity 0.12s linear;
+        }
+
+        .wax-char {
+            transform:
+                translateY(calc(var(--melt) * 40px)) scaleY(calc(1 + var(--melt) * 2.2));
+            filter: blur(calc(var(--melt) * 3px));
+            opacity: calc(1 - var(--melt));
+            text-shadow:
+                0 calc(var(--melt) * 10px) 12px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 以下テスト用メインページスタイル */
+        .section {
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+        }
+
+        .section-inner {
+            padding-left: 10vw;
+            padding-right: 10vw;
+            color: var(--text);
+        }
+
+        /* セクションの区切り */
+        .section:nth-child(even) {
+            background: rgba(245, 240, 232, 0.04);
+        }
+
+        .title {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            writing-mode: vertical-rl;
+            text-align: center;
+            font-size: 7rem;
+            color: var(--text);
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <a class="logo" href="#section-0">
+            <span id="logo" data-src="logo03.svg"></span>
+        </a>
+
+        <input type="checkbox" id="menu-toggle" />
+
+        <label for="menu-toggle" class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </label>
+
+        <nav class="menu">
+            <a href="#section-1">開催概要</a>
+            <a href="#section-2">修士研究発表</a>
+            <a href="#section-3">プロジェクト研究発表</a>
+            <a href="#section-4">関連展示</a>
+            <a href="#section-5">イベント</a>
+            <a href="#section-6">交通アクセス</a>
+            <a href="#section-7">お問い合わせ</a>
+        </nav>
+
+    </header>
+
+    <main>
+        <section class="section" id="section-0">
+            <div class="section-inner">
+                <div class="title">余熱</div>
+            </div>
+        </section>
+
+        <section class="section" id="section-1">
+            <div class="section-inner">
+                <h2>開催概要</h2>
+                <p>てすと、てすと、てすと、てすと、てすと、てすと、てすと、てすと、てすと。</p>
+                <p>テスト、テスト、テスト、テスト、テスト、テスト、テスト、テスト、テスト。</p>
+                <p>Test、Test、Test、Test、Test、Test、Test、Test、Test。</p>
+            </div>
+        </section>
+
+        <section class="section" id="section-2">
+            <div class="section-inner">
+                <h2>修士研究発表</h2>
+                <p>てすと、てすと、てすと、てすと、てすと、てすと、てすと、てすと、てすと。</p>
+                <p>テスト、テスト、テスト、テスト、テスト、テスト、テスト、テスト、テスト。</p>
+                <p>Test、Test、Test、Test、Test、Test、Test、Test、Test。</p>
+            </div>
+        </section>
+
+        <section class="section" id="section-3">
+            <div class="section-inner">
+                <h2>プロジェクト研究発表</h2>
+                <p>てすと、てすと、てすと、てすと、てすと、てすと、てすと、てすと、てすと。</p>
+                <p>テスト、テスト、テスト、テスト、テスト、テスト、テスト、テスト、テスト。</p>
+                <p>Test、Test、Test、Test、Test、Test、Test、Test、Test。</p>
+            </div>
+        </section>
+
+        <section class="section" id="section-4">
+            <div class="section-inner">
+                <h2>関連展示</h2>
+                <p>てすと、てすと、てすと、てすと、てすと、てすと、てすと、てすと、てすと。</p>
+                <p>テスト、テスト、テスト、テスト、テスト、テスト、テスト、テスト、テスト。</p>
+                <p>Test、Test、Test、Test、Test、Test、Test、Test、Test。</p>
+            </div>
+        </section>
+
+        <section class="section" id="section-5">
+            <div class="section-inner">
+                <h2>イベント</h2>
+                <p>てすと、てすと、てすと、てすと、てすと、てすと、てすと、てすと、てすと。</p>
+                <p>テスト、テスト、テスト、テスト、テスト、テスト、テスト、テスト、テスト。</p>
+                <p>Test、Test、Test、Test、Test、Test、Test、Test、Test。</p>
+            </div>
+        </section>
+
+        <section class="section" id="section-6">
+            <div class="section-inner">
+                <h2>交通アクセス</h2>
+                <p>てすと、てすと、てすと、てすと、てすと、てすと、てすと、てすと、てすと。</p>
+                <p>テスト、テスト、テスト、テスト、テスト、テスト、テスト、テスト、テスト。</p>
+                <p>Test、Test、Test、Test、Test、Test、Test、Test、Test。</p>
+            </div>
+        </section>
+
+        <section class="section" id="section-7">
+            <div class="section-inner">
+                <h2>お問い合わせ</h2>
+                <p>てすと、てすと、てすと、てすと、てすと、てすと、てすと、てすと、てすと。</p>
+                <p>テスト、テスト、テスト、テスト、テスト、テスト、テスト、テスト、テスト。</p>
+                <p>Test、Test、Test、Test、Test、Test、Test、Test、Test。</p>
+            </div>
+        </section>
+    </main>
+</body>
+
+<!-- Hammer.js を CDN から読み込み -->
+<script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/smooth-scroll/16.1.3/smooth-scroll.min.js"></script>
+
+<!-- ① SmoothScroll 初期化 -->
+<script>
+    const scroll = new SmoothScroll('a[href^="#"]', {
+        speed: 10,
+        speedAsDuration: true,
+    });
+</script>
+
+<!-- ② アンカーへSmoothScrollする関数 -->
+<script>
+    function goToHashAnchor(a) {
+        const href = a?.getAttribute?.('href');
+        if (!href || href === '#' || href === '#!') return;
+
+        const target = document.querySelector(href);
+        if (!target) return;
+
+        const currentY = window.pageYOffset;
+        const targetY = target.getBoundingClientRect().top + currentY;
+        const distance = Math.abs(targetY - currentY);
+
+        // 城戸好みセッティング
+        const durationNear = 10;
+        const durationFar = 10;
+
+        const maxScroll = Math.max(
+            1,
+            document.documentElement.scrollHeight - window.innerHeight
+        );
+        const t = Math.min(distance / maxScroll, 1);
+        const duration = durationNear + (durationFar - durationNear) * t;
+
+        scroll.animateScroll(target, a, {
+            speed: duration,
+            speedAsDuration: true
+        });
+    }
+</script>
+
+<!-- ③ 通常クリック処理 -->
+<script>
+    document.addEventListener(
+        'click',
+        (e) => {
+            const a = e.target.closest('a[href^="#"]');
+            if (!a) return;
+
+            const href = a.getAttribute('href');
+            if (!href || href === '#' || href === '#!') return;
+
+            const target = document.querySelector(href);
+            if (!target) return;
+
+            e.preventDefault();
+
+            const currentY = window.pageYOffset;
+            const targetY = target.getBoundingClientRect().top + currentY;
+            const distance = Math.abs(targetY - currentY);
+
+            const durationNear = 10;
+            const durationFar = 10;
+
+            const maxScroll = Math.max(
+                1,
+                document.documentElement.scrollHeight - window.innerHeight
+            );
+            const t = Math.min(distance / maxScroll, 1);
+            const duration = durationNear + (durationFar - durationNear) * t;
+
+            console.log('[SmoothScroll]', { href, distance, maxScroll, t, duration });
+
+            scroll.animateScroll(target, a, {
+                speed: duration,
+                speedAsDuration: true
+            });
+        },
+        { capture: true }
+    );
+</script>
+
+<!-- ④ メニュー文字の溶けアニメーション ＋ Hammer操作制御 -->
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        const links = document.querySelectorAll('.menu a');
+        const hammers = [];
+        const rafIds = []; // linkごとに1個のraf idを入れる
+
+        links.forEach((link, linkIndex) => {
+            const text = link.textContent.trim();
+            link.textContent = '';
+
+            const chars = [];
+            for (const ch of text) {
+                const span = document.createElement('span');
+                span.textContent = ch;
+                span.className = 'wax-char';
+                span.style.setProperty('--melt', '0');
+                link.appendChild(span);
+                chars.push({ el: span, heat: 0, melt: 0 });
+            }
+
+            let pressing = false;
+            let pressY = null;
+
+            const radius = 20;
+            const heatGain = 0.01;
+            const coolRate = 0.0;
+            const meltStartThreshold = 0.5;
+            const followSpeed = 0.003;
+
+            function updateHeat() {
+                if (!pressing || pressY === null) {
+                    chars.forEach(c => c.heat = Math.max(0, c.heat - coolRate));
+                    return;
+                }
+
+                chars.forEach(c => {
+                    const rect = c.el.getBoundingClientRect();
+                    const cy = rect.top + rect.height / 2;
+                    const dist = Math.abs(cy - pressY);
+                    const influence = Math.max(0, 1 - dist / radius);
+
+                    if (influence > 0) {
+                        c.heat = Math.min(1, c.heat + influence * heatGain);
+                    } else {
+                        c.heat = Math.max(0, c.heat - coolRate);
+                    }
+                });
+            }
+
+            const hammer = new Hammer(link);
+            hammers.push(hammer);
+            hammer.get('press').set({ time: 300 });
+
+            hammer.on('tap', (e) => {
+                e.preventDefault?.();
+                goToHashAnchor(link);
+
+                const toggle = document.getElementById('menu-toggle');
+                if (toggle) toggle.checked = false;
+            });
+
+            hammer.on('press', (e) => {
+                pressing = true;
+                pressY = e.center.y;
+            });
+
+            hammer.on('pressup', () => {
+                pressing = false;
+                pressY = null;
+            });
+
+            function animate() {
+                updateHeat();
+
+                let maxHeat = 0;
+
+                chars.forEach(c => {
+                    let target = 0;
+                    if (c.heat > meltStartThreshold) {
+                        const n = (c.heat - meltStartThreshold) / (1 - meltStartThreshold);
+                        target = Math.min(1, n * n);
+                    }
+                    c.melt += (target - c.melt) * followSpeed;
+                    c.el.style.setProperty('--melt', c.melt.toFixed(3));
+                    if (c.heat > maxHeat) maxHeat = c.heat;
+                });
+
+                link.classList.toggle('is-hot', maxHeat > 0.3);
+                rafIds[linkIndex] = requestAnimationFrame(animate);
+            }
+
+            animate();
+        });
+
+        function onPageShow() {
+            const toggle = document.getElementById('menu-toggle');
+            if (toggle) toggle.checked = false;
+        }
+
+        window.addEventListener('pageshow', onPageShow);
+        window.addEventListener('beforeunload', () => {
+            window.removeEventListener('pageshow', onPageShow);
+            hammers.forEach(h => h.destroy());
+            rafIds.forEach(id => id && cancelAnimationFrame(id));
+        });
+    });
+</script>
+
+<!-- ⑤ 補助機能 -->
+<script>
+    // ロゴを押したらメニューを閉じる
+    window.addEventListener('DOMContentLoaded', () => {
+        const toggle = document.getElementById('menu-toggle');
+        const logo = document.querySelector('.logo');
+
+        if (!logo) return;
+
+        logo.addEventListener('click', () => toggle.checked = false);
+        logo.addEventListener('touchend', () => toggle.checked = false, { passive: true });
+    });
+    // SVG をインライン化
+    window.addEventListener('DOMContentLoaded', async () => {
+        const host = document.querySelector('#logo');
+        const src = host?.dataset.src;
+        if (!host || !src) return;
+
+        const res = await fetch(src);
+        host.innerHTML = await res.text();
+    });
+</script>
+
+</html>
