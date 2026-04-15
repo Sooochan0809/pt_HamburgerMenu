@@ -1,1 +1,2 @@
 # pt_HamburgerMenu
+pt_HamburgerMenuはハンバーガーメニューのビジュアルをまとめたプロジェクトです。
